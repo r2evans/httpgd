@@ -159,6 +159,7 @@ hgd_print_welcome <- function(which) {
 #'   `$host`: Server hostname,
 #'   `$port`: Server port,
 #'   `$token`: Security token,
+#'   `$title`: Browser tab title (see [hgd_title()]),
 #'   `$hsize`: Plot history size (how many plots are accessible),
 #'   `$upid`: Update ID (changes when the device has received new information),
 #'   `$active`: Is the device the currently activated device.
@@ -181,18 +182,20 @@ hgd_details <- function(which = dev.cur()) {
   httpgd_details_(which)
 }
 
-#' Set the browser tab title of a httpgd device.
+#' Get or set the browser tab title of a httpgd device.
 #'
 #' Sets the document title shown in the browser tab of web clients connected
 #' to a httpgd graphics device. Connected clients are updated immediately,
 #' without having to reload the page. The initial title can be set with the
-#' `title` argument of [hgd()].
+#' `title` argument of [hgd()]. When called without a `title` argument, the
+#' current title is returned.
 #' This function will only work after starting a device with [hgd()].
 #'
-#' @param title New title string.
+#' @param title New title string. If missing, the current title is returned.
 #' @param which Which device (ID).
 #'
-#' @return `title`, invisibly.
+#' @return The current title (when `title` is missing), otherwise the new
+#'   `title`, invisibly.
 #'
 #' @importFrom grDevices dev.cur
 #' @export
@@ -202,10 +205,14 @@ hgd_details <- function(which = dev.cur()) {
 #'
 #' hgd(title = "Analysis A")
 #' hgd_title("Analysis B") # connected clients update immediately
+#' hgd_title() # returns "Analysis B"
 #'
 #' dev.off()
 #' }
 hgd_title <- function(title, which = dev.cur()) {
+  if (missing(title)) {
+    return(hgd_details(which)$title)
+  }
   stopifnot(is.character(title), length(title) == 1, !is.na(title))
   httpgd_title_(which, title)
   invisible(title)
