@@ -50,11 +50,13 @@
 
   auto* server = static_cast<httpgd::web::WebServer*>(client);
   const auto svr_config = server->get_config();
+  const auto title = server->title();
 
   using namespace cpp11::literals;
   return cpp11::writable::list{
       "host"_nm = svr_config.host.c_str(), "port"_nm = server->port(),
-      "token"_nm = svr_config.token.c_str(), "status"_nm = server->status_info()};
+      "token"_nm = svr_config.token.c_str(), "status"_nm = server->status_info(),
+      "title"_nm = title.c_str()};
   return cpp11::writable::list{};
 }
 
